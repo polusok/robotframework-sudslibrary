@@ -71,7 +71,10 @@ class _ProxyKeywords(object):
         retxml = client.options.retxml
         received = None
         try:
-            received = method(*args)
+            if len(args) == 1 and args[0].strip().lower().find('<?xml version="1.0" encoding="utf-8"?>') != -1:
+                received = method(__inject={'msg':args[0]}) 
+            else:
+                received = method(*args)
             # client does not raise fault when retxml=True, this will cause it to be raised
             if retxml:
                 binding = method.method.binding.input
